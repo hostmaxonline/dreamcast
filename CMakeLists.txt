@@ -925,6 +925,8 @@ if(USE_DISCORD AND NOT LIBRETRO)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE flycast::res)
+add_subdirectory(core/zenith)
+target_link_libraries(${PROJECT_NAME} PRIVATE zenith)
 
 if(LIBRETRO)
 	target_include_directories(${PROJECT_NAME} PRIVATE core/deps/libretro-common/include)

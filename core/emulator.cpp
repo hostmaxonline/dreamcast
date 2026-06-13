@@ -17,6 +17,7 @@
     along with Flycast.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "emulator.h"
+#include "zenith/zenith_client.h"
 #include "types.h"
 #include "stdclass.h"
 #include "cfg/option.h"
@@ -493,6 +494,7 @@ static void setPlatform(int platform)
 }
 
 void Emulator::init()
+    zenith::init();
 {
 	if (state != Uninitialized)
 	{
@@ -736,6 +738,7 @@ void Emulator::runInternal()
 }
 
 void Emulator::unloadGame()
+    zenith::sessionEnd();
 {
 	try {
 		stop();
@@ -863,6 +866,7 @@ void loadGameSpecificSettings()
 	loadSpecialSettings();
 
 	config::Settings::instance().setGameId(settings.content.gameId);
+        zenith::sessionStart(settings.content.gameId, settings.content.gameId);
 	custom_texture.init();
 
 	// Reload per-game settings
