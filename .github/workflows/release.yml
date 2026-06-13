@@ -22,7 +22,7 @@ jobs:
           .\bootstrap-vcpkg.bat
           .\vcpkg install curl:x64-windows sdl2:x64-windows
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -DUSE_DX9=OFF -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows-static -DUSE_DX9=OFF -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
       - name: Build
         run: cmake --build build --config Release --parallel
       - uses: actions/upload-artifact@v4
