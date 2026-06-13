@@ -22,7 +22,7 @@ jobs:
           .\bootstrap-vcpkg.bat
           .\vcpkg install curl:x64-windows sdl2:x64-windows
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -DUSE_DX9=OFF -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
       - name: Build
         run: cmake --build build --config Release --parallel
       - uses: actions/upload-artifact@v4
@@ -37,7 +37,7 @@ jobs:
         with:
           submodules: recursive
       - run: sudo apt-get update -qq && sudo apt-get install -y cmake ninja-build libcurl4-openssl-dev libssl-dev libgl1-mesa-dev libsdl2-dev libasound2-dev libevdev-dev libminiupnpc-dev libzstd-dev
-      - run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
+      - run: cmake -S . -B build -G Ninja -DUSE_DX9=OFF -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
       - run: cmake --build build --parallel
       - uses: actions/upload-artifact@v4
         with:
@@ -51,7 +51,7 @@ jobs:
         with:
           submodules: recursive
       - run: brew install cmake curl openssl@3 sdl2
-      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}" -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
+      - run: cmake -S . -B build -DUSE_DX9=OFF -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}" -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
       - run: cmake --build build --parallel
       - uses: actions/upload-artifact@v4
         with:
