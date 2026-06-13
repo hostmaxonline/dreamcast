@@ -1,0 +1,64 @@
+name: Release Builds
+on:
+  push:
+    tags:
+      - "v*"
+permissions:
+  contents: write
+env:
+  ZENITH_SECRET: ${{ secrets.ZENITH_SECRET }}
+jobs:
+  build-windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: vcpkg install curl:x64-windows openssl:x64-windows sdl2:x64-windows
+      - run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
+      - run: cmake --build build --config Release --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: build/Release/flycast.exe
+  build-linux:
+    name: Linux
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: sudo apt-get update -qq && sudo apt-get install -y cmake ninja-build libcurl4-openssl-dev libssl-dev libgl1-mesa-dev libsdl2-dev libasound2-dev libevdev-dev libminiupnpc-dev libzstd-dev
+      - run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
+      - run: cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: build/flycast
+  build-macos:
+    name: macOS
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - run: brew install cmake ninja curl openssl@3 sdl2
+      - run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}" -DOPENSSL_ROOT_DIR=$(brew --prefix openssl@3)
+      - run: cmake --build build --parallel
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: build/flycast
+  release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: dist/
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: "Flycast Zenith ${{ github.ref_name }}"
+          files: dist/**
