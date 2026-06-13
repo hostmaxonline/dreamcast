@@ -15,9 +15,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - run: vcpkg install curl:x64-windows openssl:x64-windows sdl2:x64-windows
-      - run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
-      - run: cmake --build build --config Release --parallel
+      - name: Setup vcpkg
+        run: |
+          cd C:\vcpkg
+          git pull
+          .\bootstrap-vcpkg.bat
+          .\vcpkg install curl:x64-windows sdl2:x64-windows
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_BUILD_TYPE=Release -DZENITH_SECRET="${{ env.ZENITH_SECRET }}"
+      - name: Build
+        run: cmake --build build --config Release --parallel
       - uses: actions/upload-artifact@v4
         with:
           name: windows-build
