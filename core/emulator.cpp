@@ -494,8 +494,8 @@ static void setPlatform(int platform)
 }
 
 void Emulator::init()
-    zenith::init();
 {
+    zenith::init();
 	if (state != Uninitialized)
 	{
 		verify(state == Init);
@@ -738,8 +738,8 @@ void Emulator::runInternal()
 }
 
 void Emulator::unloadGame()
-    zenith::sessionEnd();
 {
+    zenith::sessionEnd();
 	try {
 		stop();
 	} catch (...) { }
