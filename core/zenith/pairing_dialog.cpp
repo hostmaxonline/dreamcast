@@ -1,6 +1,6 @@
 #include "pairing_dialog.h"
 #include "zenith_client.h"
-#include "imgui/imgui.h"
+#include "deps/imgui/imgui.h"
 #include <cstring>
 #include <string>
 #include <thread>
