@@ -233,7 +233,7 @@ static ZenithIni readIni(){
     return ini;
 }
 static void writeIni(const ZenithIni& ini){
-    system(("mkdir -p \""+configDir()+"\"").c_str());
+    (void)system(("mkdir -p \""+configDir()+"\"").c_str());
     std::ofstream f(iniPath());
     f<<"[Zenith]\nDeviceToken="<<ini.deviceToken<<"\nDeviceName="<<ini.deviceName<<"\n";
 }
